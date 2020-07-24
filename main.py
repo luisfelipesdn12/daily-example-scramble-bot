@@ -5,6 +5,8 @@ import requests, random
 API_TOKEN = open("API_TOKEN.txt", "r").read()
 keep_going = False
 
+groups_subscribed = [-1001250429838, -1001479660521]
+
 def get_scramble():
     api_uri = "https://scrambler-api.herokuapp.com/3x3x3"
     response = requests.get(api_uri)
@@ -31,7 +33,10 @@ Embaralhe com o verde na frente e o branco em cima:
     return(message)
 
 bot = Bot(API_TOKEN)
-bot.send_message(-1001250429838, text=daily_example_scramble(), parse_mode="Markdown")
+
+for group_sub in groups_subscribed:
+    print(group_sub)
+    bot.send_message(group_sub, text=daily_example_scramble(), parse_mode="Markdown")
 
 if keep_going == True:
     updater = Updater(API_TOKEN, use_context=True)

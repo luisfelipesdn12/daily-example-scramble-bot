@@ -27,7 +27,7 @@ def scramble(update, context):
     except IndexError: cube_type = "3x3x3"
 
     try: scramble = get_scramble(cube_type)
-    except: scramble = "Aparently this is not a valid cube type :/"
+    except: scramble = f"Aparently this is not a valid cube type :/ \nOr something went wrong while I've tried to access the data in the API: \nhttps://scrambler-api.herokuapp.com/{cube_type}"
     
     update.message.reply_text(
         f'Hello {update.message.from_user.first_name}, your {cube_type} scramble is: \n\n{scramble}'

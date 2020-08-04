@@ -69,7 +69,7 @@ f"""
 
 Embaralhe com o verde na frente e o branco em cima:
 
-{return_scrambles_formated(type)}
+{return_scrambles_formated(type, 1)}
 """
     )
     return(message)

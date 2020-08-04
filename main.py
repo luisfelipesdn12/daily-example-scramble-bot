@@ -14,12 +14,6 @@ except: alert_groups = False
 
 groups_subscribed = [-1001250429838, -1001479660521]
 
-def get_scramble(type):
-    api_uri = f"https://scrambler-api.herokuapp.com/{type}"
-    response = requests.get(api_uri)
-    scramble = random.choice(response.json())
-    return(scramble)
-
 def get_n_scrambles(type, n):
     api_uri = f"https://scrambler-api.herokuapp.com/{type}"
 
@@ -34,6 +28,23 @@ def get_n_scrambles(type, n):
 
     return(scrambles_list)
 
+def return_scrambles_formated(cube_type, n):
+    error_message = f"Aparently this is not a valid cube type :/ \nOr something went wrong while I've tried to access the data in the API: \nhttps://scrambler-api.herokuapp.com/{cube_type}"
+
+    try: scrambles = get_n_scrambles(cube_type, n)
+    except: return(error_message)
+    
+    if len(scrambles) > 1:
+        string_of_formated_scrambles = ""
+
+        for c in range(len(scrambles)):
+            string_of_formated_scrambles += f"*{c+1}*. {scrambles[c]}\n\n"
+
+        return(string_of_formated_scrambles)
+
+    else:
+        return(scrambles[0])
+
 def scramble(update, context):
 
     try: cube_type = context.args[0]
@@ -44,29 +55,8 @@ def scramble(update, context):
         if n_of_scrambles > 25: n_of_scrambles = 25
     except IndexError: n_of_scrambles = 1
 
-    error_message = f"Aparently this is not a valid cube type :/ \nOr something went wrong while I've tried to access the data in the API: \nhttps://scrambler-api.herokuapp.com/{cube_type}"
-
-    def return_scrambles_formated():
-        if n_of_scrambles > 1:
-            try:
-                scramble = get_n_scrambles(cube_type, n_of_scrambles)
-                string_of_formated_scrambles = ""
-
-                for c in range(len(scramble)):
-                    string_of_formated_scrambles += f"*{c+1}*. {scramble[c]}\n\n"
-
-                return(string_of_formated_scrambles)
-            except:
-                return(error_message)
-
-        else:
-            try: scramble = get_scramble(cube_type)
-            except: scramble = error_message
-
-            return(scramble)
-
     update.message.reply_text(
-        f'Hello {update.message.from_user.first_name}, your {cube_type} scramble is: \n\n{return_scrambles_formated()}',
+        f'Hello {update.message.from_user.first_name}, your {cube_type} scramble is: \n\n{return_scrambles_formated(cube_type, n_of_scrambles)}',
         parse_mode="Markdown"
         )
     print(context.user_data)
@@ -79,7 +69,7 @@ f"""
 
 Embaralhe com o verde na frente e o branco em cima:
 
-{get_scramble(type)}
+{return_scrambles_formated(type)}
 """
     )
     return(message)
